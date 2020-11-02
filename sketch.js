@@ -6,12 +6,14 @@ const Constraint = Matter.Constraint;
 var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
+var bg;
 var bird, slingshot;
-
+var score=0;
 var gameState = "onSling";
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    //backgroundImg = loadImage("sprites/bg.png");
+    getBackgroundImg();
 }
 
 function setup(){
@@ -45,7 +47,16 @@ function setup(){
 }
 
 function draw(){
-    background(backgroundImg);
+    if(backgroundImg){
+        background(backgroundImg);
+    }
+    pig1.score();
+    pig3.score();
+    textSize(25);
+    noStroke();
+    fill(255);
+    textFont('Georgia');
+    text("Score:"+score,1050,50);
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
@@ -66,7 +77,7 @@ function draw(){
     bird.display();
     platform.display();
     //log6.display();
-    slingshot.display();    
+    slingshot.display();   
 }
 
 function mouseDragged(){
@@ -85,4 +96,24 @@ function keyPressed(){
     if(keyCode === 32){
        // slingshot.attach(bird.body);
     }
+}
+
+async function getBackgroundImg()
+{
+ var response = await fetch("https://worldtimeapi.org/api/timezone/Asia/Kolkata");
+ var responseJSON = await response.json();
+ //A promise is an object that can store or resolve values.
+ //It could be fulfilled, rejected or be pending.
+ console.log(responseJSON);
+ var datetime=responseJSON.datetime;
+ var hour=datetime.slice(11,13);
+
+ if(hour>=06 && hour<=19){
+    bg="sprites/bg.png"
+ }
+ else{
+     bg="sprites/bg2.jpg"
+ }
+ backgroundImg=loadImage(bg);
+ console.log(backgroundImg);
 }
